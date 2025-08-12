@@ -10,8 +10,14 @@ jobs:
     name: validation
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository (without token)
-        uses: actions/checkout@v3
-      
-      - name: Validate gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
+    - name: Checkout repository (without token)
+      uses: actions/checkout@v3
+
+    - uses: clonedSemicolon/setup-strace@v13
+    - name: Validate gradle wrapper
+      uses: gradle/wrapper-validation-action@v1
+    - name: Upload strace artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: strace-logs-${{ github.job }}-${{ matrix.flavor || 'lint' }}-${{ github.run_id }}-${{ github.run_attempt }}-${{ strategy.job-index || 0 }}
+        path: /home/runner/strace_logs/
